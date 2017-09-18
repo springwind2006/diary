@@ -23,7 +23,7 @@
     <select id="getUserById" parameterType="int" resultType="cn.stwms.model.User">
         select * from m_user where id=#{id}
     </select>
-    <select id="getAllUser" parameterType="String" resultMap="cn.stwms.model.User">
+    <select id="getAllUser" parameterType="String" resultType="cn.stwms.model.User">
         select * from m_user where username like concat(concat('%',#{kw}),'%')
     </select>
     

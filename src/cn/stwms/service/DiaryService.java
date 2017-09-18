@@ -16,8 +16,8 @@ public class DiaryService {
 	@Autowired
 	private DiaryMapper diaryMapper;
 	
-	public List<?> list(){
-		List<?> diarys=diaryMapper.getAllDiary("1");
+	public List<Diary> list(String kw){
+		List<Diary> diarys=diaryMapper.getAllDiary(kw);
 		return diarys;
 	}
 	

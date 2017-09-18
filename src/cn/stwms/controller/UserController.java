@@ -1,5 +1,7 @@
 package cn.stwms.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -21,13 +23,17 @@ public class UserController{
 
 	@RequestMapping(value="/register",method = RequestMethod.GET)
 	public String register(HttpServletRequest request,ModelMap model){
-		int result=0;
-		User user=new User();
-		user.setUsername("lirui");
-		user.setPassword("12345");
-		user.setEmail("lirui@163.com");
-		result=userService.save(user);
-		model.addAttribute("message", result>0?"success":"failed");
+//		int result=0;
+//		User user=new User();
+//		user.setUsername("lirui");
+//		user.setPassword("12345");
+//		user.setEmail("lirui@163.com");
+//		result=userService.save(user);
+		String kw=request.getParameter("kw")!=null?request.getParameter("kw"):"n";
+		List<User> users=userService.list(kw);
+		model.addAttribute("kw", kw);
+		model.addAttribute("users", users);
+		model.addAttribute("count", users.size());
 		return "user/register";	
 	}
 	

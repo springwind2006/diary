@@ -17,8 +17,8 @@ public class UserService {
 	@Autowired
 	private UserMapper userMapper;
 	
-	public List<?> list(){
-		List<?> users=userMapper.getAllUser("s");
+	public List<User> list(String kw){
+		List<User> users=userMapper.getAllUser(kw);
 		return users;
 	}
 	

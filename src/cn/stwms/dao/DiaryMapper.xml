@@ -15,7 +15,7 @@
     	insert into m_diary (title,subtitle,content,weather,emote,addtime,edittime,sync_id,userid) values (#{title}, #{subtitle}, #{content}, #{weather}, #{emote}, #{addtime}, #{edittime}, #{sync_id},#{userid})
     </insert>
     <update id="updateDiary" parameterType="cn.stwms.model.Diary">
-    	update diary set title = #{title}, subtitle = #{title}, content = #{title}, weather = #{title}, emote = #{emote}, edittime = #{edittime} where id = #{id}
+    	update diary set title = #{title}, subtitle = #{subtitle}, content = #{content}, weather = #{weather}, emote = #{emote}, edittime = #{edittime} where id = #{id}
     </update>
     <delete id="deleteDiary" parameterType="int">
     	delete from m_diary where id=#{id}
@@ -23,7 +23,7 @@
     <select id="getDiaryById" parameterType="int" resultType="cn.stwms.model.Diary">
         select * from m_diary where id=#{id}
     </select>
-    <select id="getAllDiary" parameterType="String" resultMap="cn.stwms.model.Diary">
+    <select id="getAllDiary" parameterType="String" resultType="cn.stwms.model.Diary">
         select * from m_diary where title like concat(concat('%',#{kw}),'%')
     </select>
     
