@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd ">
+    
+    <!-- 自动扫描注入包设置 -->
+    <context:component-scan base-package="cn.stwms" >
+    	<context:include-filter type="regex" expression=".service"/> <!-- 自动注入控制器层@Controller -->
+    	<context:include-filter type="regex" expression=".controller"/> <!-- 自动注入服务层@Service -->
+    	<context:include-filter type="regex" expression=".dao"/> <!-- 自动注入模型处理层@Component -->
+    </context:component-scan>
+     
+	<!-- 页面输入配置 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/view/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+	<mvc:annotation-driven />
+	
+	
+	<!-- 拦截器配置 -->
+	<mvc:interceptors>
+		<!-- 默认拦截器 -->
+		<mvc:interceptor>
+			<!-- /*：拦截根目录下的子目录，不包括根目录，子目录下层目录；/**：拦截器根目录下所有子孙目录 -->
+			<mvc:mapping path="/**" />
+			<bean class="cn.stwms.interceptor.DefaultInterceptor"></bean>
+		</mvc:interceptor>
+		<!-- 用户登录监测拦截器 -->
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<!-- 不拦截所有/user/路径开头的目录 -->
+			<mvc:exclude-mapping path="/user/**"/>
+			<bean class="cn.stwms.interceptor.LoginInterceptor"></bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+	
+	
+	<!-- 数据库配置 -->
+	<context:property-placeholder location="/WEB-INF/db.properties" /> 
+	
+	
+	<!-- 【方式一、使用org.springframework.jdbc.datasource.DriverManagerDataSource（无连接池）】 -->
+	<!-- 	
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="${driver}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+	</bean> 
+	-->
+	<!------======使用jdbcTemplate作为数据库操作对象=====----->
+	<!-- 
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean> 
+	-->
+	
+	<!-- 【方式二、使用org.apache.commons.dbcp.BasicDataSource （使用连接池，适合于生产环境高并发情况）】 -->
+	<bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+		<property name="driverClassName" value="${driver}" />
+		<property name="url" value="${url}" />
+		<property name="username" value="${username}" />
+		<property name="password" value="${password}" />
+	</bean>
+	
+	<!-- (事务管理)transaction manager, use JtaTransactionManager for global tx -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- 创建SqlSessionFactory，同时指定数据源 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<!-- 可通过注解控制事务 -->
+	<tx:annotation-driven />
+	
+	<!-- Mapper接口所在包名，Spring会自动查找其下的Mapper -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="cn.stwms.mapper" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+	</bean>
+
+	
+	
+	<!-- 资源目录配置 -->
+	<!-- <mvc:resources mapping="/resources/**" location="/resources/" /> -->
+</beans>
