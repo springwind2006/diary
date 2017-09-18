@@ -21,11 +21,12 @@ public class UserController{
 
 	@RequestMapping(value="/register",method = RequestMethod.GET)
 	public String register(HttpServletRequest request,ModelMap model){
+		int result=0;
 		User user=new User();
-		user.setUsername("spring");
+		user.setUsername("lirui");
 		user.setPassword("12345");
-		user.setEmail("402085437@qq.com");
-		int result=userService.save(user);
+		user.setEmail("lirui@163.com");
+		result=userService.save(user);
 		model.addAttribute("message", result>0?"success":"failed");
 		return "user/register";	
 	}

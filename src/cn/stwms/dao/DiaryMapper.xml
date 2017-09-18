@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 为这个mapper指定一个唯一的namespace，namespace的值习惯上设置成包名+sql映射文件名，这样就能够保证namespace的值是唯一的
+例如namespace="myBatis.demo.userMapper"就是myBatis.demo(包名)+userMapper(userMapper.xml文件去除后缀)
+ -->
+<mapper namespace="cn.stwms.dao.DiaryMapper">
+    <!-- 
+    在select标签中编写查询的SQL语句， 设置select标签的id属性为getDiary，id属性值必须是唯一的，不能够重复
+    使用parameterType属性指明查询时使用的参数类型，resultType属性指明查询返回的结果集类型
+    resultType="myBatis.demo.Diary"就表示将查询结果封装成一个Diary类的对象返回
+    Diary类就是diarys表所对应的实体类
+    -->
+    
+    <insert id="addDiary" parameterType="cn.stwms.model.Diary">
+    	insert into m_diary (title,subtitle,content,weather,emote,addtime,edittime,sync_id,userid) values (#{title}, #{subtitle}, #{content}, #{weather}, #{emote}, #{addtime}, #{edittime}, #{sync_id},#{userid})
+    </insert>
+    <update id="updateDiary" parameterType="cn.stwms.model.Diary">
+    	update diary set title = #{title}, subtitle = #{title}, content = #{title}, weather = #{title}, emote = #{emote}, edittime = #{edittime} where id = #{id}
+    </update>
+    <delete id="deleteDiary" parameterType="int">
+    	delete from m_diary where id=#{id}
+    </delete>
+    <select id="getDiaryById" parameterType="int" resultType="cn.stwms.model.Diary">
+        select * from m_diary where id=#{id}
+    </select>
+    <select id="getAllDiary" parameterType="String" resultMap="cn.stwms.model.Diary">
+        select * from m_diary where title like concat(concat('%',#{kw}),'%')
+    </select>
+    
+</mapper>
