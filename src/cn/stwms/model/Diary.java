@@ -1,6 +1,9 @@
 package cn.stwms.model;
 
-public class Diary{
+import java.io.Serializable;
+
+public class Diary implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private int id;
 	private String title;
 	private String subtitle;

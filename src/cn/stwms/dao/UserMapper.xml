@@ -4,6 +4,8 @@
 例如namespace="myBatis.demo.userMapper"就是myBatis.demo(包名)+userMapper(userMapper.xml文件去除后缀)
  -->
 <mapper namespace="cn.stwms.dao.UserMapper">
+	<!--回收策略为先进先出;缓存为30秒;最多缓存512个引用对象-->
+	<cache type="cn.stwms.cache.RedisCache" eviction="FIFO" flushInterval="30000" size="512" readOnly="true" />
     <!-- 
     在select标签中编写查询的SQL语句， 设置select标签的id属性为getUser，id属性值必须是唯一的，不能够重复
     使用parameterType属性指明查询时使用的参数类型，resultType属性指明查询返回的结果集类型
@@ -11,19 +13,19 @@
     User类就是users表所对应的实体类
     -->
     
-    <insert id="addUser" parameterType="cn.stwms.model.User">
+    <insert id="addUser" parameterType="User">
     	insert into m_user(username,password,email,addtime,lastlogin) values(#{username},#{password},#{email},#{addtime},#{lastlogin})
     </insert>
-    <update id="updateUser" parameterType="cn.stwms.model.User">
+    <update id="updateUser" parameterType="User">
     	update m_user set username=#{username},password=#{password},email=#{email} where id=#{id}
     </update>
     <delete id="deleteUser" parameterType="int">
     	delete from m_user where id=#{id}
     </delete>
-    <select id="getUserById" parameterType="int" resultType="cn.stwms.model.User">
+    <select id="getUserById" parameterType="int" resultType="User">
         select * from m_user where id=#{id}
     </select>
-    <select id="getAllUser" parameterType="String" resultType="cn.stwms.model.User" useCache="false">
+    <select id="getAllUser" parameterType="String" resultType="User" useCache="true">
         select * from m_user where username like concat(concat('%',#{kw}),'%')
     </select>
     

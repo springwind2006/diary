@@ -32,7 +32,7 @@
 
 	<!-- 创建SqlSessionFactory，同时指定数据源 -->
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-		<!-- <property name="configLocation" value="/WEB-INF/mybatis-config.xml" /> -->
+		<property name="configLocation" value="/WEB-INF/mybatis-config.xml" />
 		<property name="dataSource" ref="dataSource" />
 	</bean>
 	

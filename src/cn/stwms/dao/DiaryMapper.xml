@@ -11,19 +11,19 @@
     Diary类就是diarys表所对应的实体类
     -->
     
-    <insert id="addDiary" parameterType="cn.stwms.model.Diary">
+    <insert id="addDiary" parameterType="Diary">
     	insert into m_diary (title,subtitle,content,weather,emote,addtime,edittime,sync_id,userid) values (#{title}, #{subtitle}, #{content}, #{weather}, #{emote}, #{addtime}, #{edittime}, #{sync_id},#{userid})
     </insert>
-    <update id="updateDiary" parameterType="cn.stwms.model.Diary">
+    <update id="updateDiary" parameterType="Diary">
     	update diary set title = #{title}, subtitle = #{subtitle}, content = #{content}, weather = #{weather}, emote = #{emote}, edittime = #{edittime} where id = #{id}
     </update>
     <delete id="deleteDiary" parameterType="int">
     	delete from m_diary where id=#{id}
     </delete>
-    <select id="getDiaryById" parameterType="int" resultType="cn.stwms.model.Diary">
+    <select id="getDiaryById" parameterType="int" resultType="Diary">
         select * from m_diary where id=#{id}
     </select>
-    <select id="getAllDiary" parameterType="String" resultType="cn.stwms.model.Diary">
+    <select id="getAllDiary" parameterType="String" resultType="Diary">
         select * from m_diary where title like concat(concat('%',#{kw}),'%')
     </select>
     
