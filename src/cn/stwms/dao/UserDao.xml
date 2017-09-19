@@ -3,7 +3,7 @@
 <!-- 为这个mapper指定一个唯一的namespace，namespace的值习惯上设置成包名+sql映射文件名，这样就能够保证namespace的值是唯一的
 例如namespace="myBatis.demo.userMapper"就是myBatis.demo(包名)+userMapper(userMapper.xml文件去除后缀)
  -->
-<mapper namespace="cn.stwms.dao.UserMapper">
+<mapper namespace="cn.stwms.dao.UserDao">
 	<!-- 使用自定义缓存（支持自定义参数） -->
 	<cache type="cn.stwms.cache.RedisCache">
 		<!-- 过期时间,默认60,单位:秒 -->

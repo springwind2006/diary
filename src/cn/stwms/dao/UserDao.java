@@ -4,7 +4,7 @@ import java.util.List;
 
 import cn.stwms.model.User;
 
-public interface UserMapper {
+public interface UserDao {
 
 	public User getUserById(int id);
 

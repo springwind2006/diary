@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import cn.stwms.dao.DiaryMapper;
+import cn.stwms.dao.DiaryDao;
 import cn.stwms.model.Diary;
 import cn.stwms.utils.BaseUtils;
 
@@ -14,15 +14,15 @@ import cn.stwms.utils.BaseUtils;
 public class DiaryService {
 	
 	@Autowired
-	private DiaryMapper diaryMapper;
+	private DiaryDao diaryDao;
 	
 	public List<Diary> list(String kw){
-		List<Diary> diarys=diaryMapper.getAllDiary(kw);
+		List<Diary> diarys=diaryDao.getAllDiary(kw);
 		return diarys;
 	}
 	
 	public Diary find(int id){
-		Diary diary=diaryMapper.getDiaryById(id);
+		Diary diary=diaryDao.getDiaryById(id);
 		return diary;
 	}
 	
@@ -30,7 +30,7 @@ public class DiaryService {
 		int time=BaseUtils.getTime();
 		diary.setAddtime(time);
 		diary.setEdittime(time);
-		int result=diaryMapper.addDiary(diary);
+		int result=diaryDao.addDiary(diary);
 		return result;
 	}
 }

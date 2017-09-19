@@ -4,7 +4,7 @@ import java.util.List;
 
 import cn.stwms.model.Diary;
 
-public interface DiaryMapper {
+public interface DiaryDao {
 
 	public Diary getDiaryById(int id);
 
