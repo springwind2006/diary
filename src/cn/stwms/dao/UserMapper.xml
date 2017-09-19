@@ -4,15 +4,25 @@
 例如namespace="myBatis.demo.userMapper"就是myBatis.demo(包名)+userMapper(userMapper.xml文件去除后缀)
  -->
 <mapper namespace="cn.stwms.dao.UserMapper">
-	<!--回收策略为先进先出;缓存为30秒;最多缓存512个引用对象-->
-	<cache type="cn.stwms.cache.RedisCache" eviction="FIFO" flushInterval="30000" size="512" readOnly="true" />
+	<!-- 使用自定义缓存（支持自定义参数） -->
+	<cache type="cn.stwms.cache.RedisCache">
+		<!-- 过期时间,默认60,单位:秒 -->
+		<property name="expires" value="30"/> 
+		<!-- 主机,默认127.0.0.1 -->
+		<property name="host" value="127.0.0.1"/>
+		<!-- 端口,默认6379 -->
+		<property name="port" value="6379"/> 
+	</cache>
+	<!--默认二级缓存配置，回收策略为先进先出;缓存为30秒;最多缓存512个引用对象-->
+	<!-- <cache eviction="FIFO" flushInterval="30000" size="512" readOnly="true" /> -->
+	
+	
     <!-- 
     在select标签中编写查询的SQL语句， 设置select标签的id属性为getUser，id属性值必须是唯一的，不能够重复
     使用parameterType属性指明查询时使用的参数类型，resultType属性指明查询返回的结果集类型
     resultType="myBatis.demo.User"就表示将查询结果封装成一个User类的对象返回
     User类就是users表所对应的实体类
     -->
-    
     <insert id="addUser" parameterType="User">
     	insert into m_user(username,password,email,addtime,lastlogin) values(#{username},#{password},#{email},#{addtime},#{lastlogin})
     </insert>

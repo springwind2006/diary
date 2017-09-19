@@ -12,65 +12,95 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 public class RedisCache implements Cache {
-	private static String host="127.0.0.1"; //服务器
-	private static int port=6379; //连接端口
-	private static int timeout=15; //单位：秒
+	
     private static Log logger = LogFactory.getLog(RedisCache.class);
-    private Jedis redisClient = createClient();
-
+    
     /** The ReadWriteLock. */
     private final ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-
+    private Jedis redisClient;
     private String id;
+    
+    //外部可配置参数
+    private String host="127.0.0.1";	//服务器
+	private int port=6379;				//连接端口
+	private int expires=60;		//单位：秒
+
+	public String getHost() {
+		return host;
+	}
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public int getPort() {
+		return port;
+	}
+
+	public void setPort(int port) {
+		this.port = port;
+	}
+    public int getExpires() {
+		return expires;
+	}
+
+	public void setExpires(int expires) {
+		this.expires = expires;
+	}
+
+	
     public RedisCache(final String id) {
         if (id == null) {
             throw new IllegalArgumentException("Cache instances require an ID");
         }
-        logger.debug("----------->>MybatisRedisCache:id=" + id);
+        logger.debug("MybatisRedisCache:id=" + id);
         this.id = id;
     }
-
+    
     public String getId() {
         return this.id;
     }
-
+    
     public int getSize() {
-        return Integer.valueOf(redisClient.dbSize().toString());
+        return Integer.valueOf(getRedis().dbSize().toString());
     }
 
     public void putObject(Object key, Object value) {
         byte[] bytes = BeanUtils.serialize(value);
-        redisClient.set(BeanUtils.serialize(key.toString()), bytes);
-        logger.debug("----------->>putObject:" + key + "=" + value);
+        byte[] nxxx="NX".getBytes();
+        byte[] expx="EX".getBytes();
+        getRedis().set(BeanUtils.serialize(key.toString()), bytes,nxxx,expx,expires);
     }
 
     public Object getObject(Object key) {
-        byte[] bytes = redisClient.get(BeanUtils.serialize(key.toString()));
+        byte[] bytes = getRedis().get(BeanUtils.serialize(key.toString()));
         Object value = BeanUtils.unserialize(bytes);
-        logger.debug("----------->>getObject:" + key + "=" + value);
         return value;
     }
 
     public Object removeObject(Object key) {
-        return redisClient.expire(BeanUtils.serialize(key.toString()), 0);
+        return getRedis().expire(BeanUtils.serialize(key.toString()), 0);
     }
 
     public void clear() {
-        redisClient.flushDB();
+    	getRedis().flushDB();
     }
 
     public ReadWriteLock getReadWriteLock() {
         return readWriteLock;
     }
 
-    protected static Jedis createClient() {
+    protected Jedis getRedis() {
         try {
-            JedisPoolConfig config = new JedisPoolConfig();
-            JedisPool pool = new JedisPool(config, host,port,timeout);
-               return pool.getResource();
+        	if(redisClient==null){
+	            JedisPoolConfig config = new JedisPoolConfig();
+	            //System.out.print("---JedisPool Init-->host:"+host+" port:"+port+" expires:"+expires);
+	            JedisPool pool = new JedisPool(config, host,port);
+	            redisClient=pool.getResource();
+        	}
+        	return redisClient;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        throw new RuntimeException("初始化连接池错误");
+        throw new RuntimeException("Redis Connect init failed!");
     }
 }
