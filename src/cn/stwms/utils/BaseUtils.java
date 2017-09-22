@@ -73,15 +73,15 @@ public class BaseUtils {
 		try {
 			md5 = MessageDigest.getInstance("MD5");
 			byte[] bytes = md5.digest(string.getBytes());
-			String result = "";
+			StringBuilder res=new StringBuilder();
 			for (byte b : bytes) {
 				String temp = Integer.toHexString(b & 0xff);
 				if (temp.length() == 1) {
-					temp = "0" + temp;
+					res.append("0");
 				}
-				result += temp;
+				res.append(temp);
 			}
-			return result;
+			return res.toString();
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
@@ -98,7 +98,7 @@ public class BaseUtils {
 			return "";
 		}
 		FileInputStream in = null;
-		String result = "";
+		StringBuilder res=new StringBuilder();
 		byte buffer[] = new byte[8192];
 		int len;
 		try {
@@ -112,9 +112,9 @@ public class BaseUtils {
 			for (byte b : bytes) {
 				String temp = Integer.toHexString(b & 0xff);
 				if (temp.length() == 1) {
-					temp = "0" + temp;
+					res.append("0");
 				}
-				result += temp;
+				res.append(temp);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -127,6 +127,6 @@ public class BaseUtils {
 				}
 			}
 		}
-		return result;
+		return res.toString();
 	}
 }

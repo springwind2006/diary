@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+
+<struts>
+	<!-- 【常量配置】 -->
+	<constant name="struts.action.extension" value=",php"/>
+	<constant name="struts.enable.SlashesInActionNames" value="true"/>
+	<constant name="struts.serve.static.browserCache" value="false" />
+	<constant name="struts.configuration.xml.reload" value="true" />
+	<constant name="struts.i18n.encoding" value="UTF-8" />
+	<constant name="struts.devMode" value="false" />
+	
+	<!-- 按自动装配方式 -->
+	<constant name="struts.objectFactory.spring.autoWire" value="true" />
+	
+	<!-- 【基础配置】 -->
+    <package name="base" extends="json-default">
+    	<!-- 截拦器定义 -->
+    	<interceptors>
+    		<interceptor name="loginfilter" class="cn.stwms.interceptor.LoginInterceptor"/>
+    		<interceptor-stack name="globalInterceptor">
+	    		<interceptor-ref name="loginfilter">
+	    			<param name="excludeMethods">login,register,findPassword</param>
+	    		</interceptor-ref>
+	    		<!-- 注意：此处必须将默认拦截器加入，否则很多系统功能无法使用 -->
+	    		<interceptor-ref name="defaultStack"></interceptor-ref>
+    		</interceptor-stack>
+    	</interceptors>
+    	
+    	<!-- 设置全局拦截器 -->
+    	<default-interceptor-ref name="globalInterceptor"/>
+    	
+    	<!-- 全局结果显示 -->
+    	<global-results>  
+            <result name="login" type="json">/WEB-INF/Views/User/login.jsp</result>  
+            <result name="hasLogined">/WEB-INF/Views/Common/failed.jsp</result>
+            <result name="failed">/WEB-INF/Views/Common/failed.jsp</result>
+            <result name="exception">/WEB-INF/Views/Common/exception.jsp</result>
+        </global-results>
+        <!-- 全局错误显示 -->
+        <global-exception-mappings>  
+            <exception-mapping result="exception" exception="java.lang.Exception"></exception-mapping>  
+        </global-exception-mappings>
+    </package>
+    
+    <!-- 【项目配置】 -->
+    <package name="diary" namespace="/"  extends="base">
+    	<!-- 默认欢迎页 -->
+    	<default-action-ref name="welcome" />
+		<action name="welcome" >
+			<result name="success">/index.jsp</result>  
+		</action>
+    	<!-- 方法映射 -->
+	    <action name="*/*" class="cn.stwms.action.{1}Action" method="{2}">
+            <result name="success" >/WEB-INF/Views/{1}/{2}.jsp</result>
+        </action>
+        <action name="api/*/*" class="cn.stwms.action.{1}Action" method="{2}">
+            <result name="success" type="json" >
+            	<param name="root">root</param>
+            </result>
+        </action>
+    </package>
+</struts>

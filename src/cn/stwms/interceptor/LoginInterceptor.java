@@ -1,50 +1,57 @@
 package cn.stwms.interceptor;
-import java.util.LinkedHashMap;
+
 import java.util.Map;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.apache.struts2.ServletActionContext;
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionInvocation;
+import com.opensymphony.xwork2.interceptor.MethodFilterInterceptor;
 
 import cn.stwms.model.User;
 
-public class LoginInterceptor extends HandlerInterceptorAdapter {
+public class LoginInterceptor extends MethodFilterInterceptor {
+	private static final long serialVersionUID = 1L;
+	private String name;
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		HttpSession session=request.getSession();
-		ServletContext servletContext=session.getServletContext();
-		User user=(User)session.getAttribute("user");
-		String userId="";
-		boolean isLogin=false;
-		Map<String, Object> result=new LinkedHashMap<>();
-		
-	    //单点登录
+	protected String doIntercept(ActionInvocation invocation) throws Exception {
+		ServletContext  servletContext=ServletActionContext.getServletContext();
+	    ActionContext actionContext=invocation.getInvocationContext();
+	    Map<String, Object> session=actionContext.getSession();
+	    User user=(User)session.get("user");
+	    String userId="";
+	    
 	    try {
 	    	userId=String.valueOf(user.getId());
+		} catch (Exception e) {
+			System.out.println(actionContext.getName()+":未登录");
+			actionContext.getValueStack().setValue("data", 121);
+			return "login";
+		}
+
+	    //单点登录
+	    try {
 	    	Map<String, String> userList=(Map<String, String>)servletContext.getAttribute("userList");
 		    String sessionIdLast=userList.get(userId);
-		    String sessionIdNow=session.getId();
+		    String sessionIdNow=ServletActionContext.getRequest().getSession().getId();
 	    	if(!sessionIdLast.trim().equals(sessionIdNow)){
-	    		result.put("errcode", 2);
-	    		result.put("errmsg", "logined");
-		    }else{
-		    	isLogin=true;
+		    	System.out.println("此账号已经登录");
+		    	return "hasLogined";
 		    }
 		} catch (Exception e) {
-			result.put("errcode", 1);
-    		result.put("errmsg", "not logined");
+			return "failed";
 		}
+	   
 	    
-	    if(!isLogin){
-	    	ObjectMapper json=new ObjectMapper();
-			response.getWriter().print(json.writeValueAsString(result));
-	    }
-	    result=null;
-		return isLogin;
+		return invocation.invoke();
 	}
-
 }

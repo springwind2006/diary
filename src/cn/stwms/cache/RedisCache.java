@@ -6,6 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.ibatis.cache.Cache;
 
+import cn.stwms.utils.BaseUtils;
 import cn.stwms.utils.BeanUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -63,22 +64,22 @@ public class RedisCache implements Cache {
     public int getSize() {
         return Integer.valueOf(getRedis().dbSize().toString());
     }
-
+    
     public void putObject(Object key, Object value) {
-        byte[] bytes = BeanUtils.serialize(value);
+        byte[] datas = BeanUtils.serialize(value);
         byte[] nxxx="NX".getBytes();
         byte[] expx="EX".getBytes();
-        getRedis().set(BeanUtils.serialize(key.toString()), bytes,nxxx,expx,expires);
+        getRedis().set(getKey(key), datas,nxxx,expx,expires);
     }
 
     public Object getObject(Object key) {
-        byte[] bytes = getRedis().get(BeanUtils.serialize(key.toString()));
+        byte[] bytes = getRedis().get(getKey(key));
         Object value = BeanUtils.unserialize(bytes);
         return value;
     }
 
     public Object removeObject(Object key) {
-        return getRedis().expire(BeanUtils.serialize(key.toString()), 0);
+        return getRedis().expire(getKey(key), 0);
     }
 
     public void clear() {
@@ -89,7 +90,8 @@ public class RedisCache implements Cache {
         return readWriteLock;
     }
 
-    protected Jedis getRedis() {
+    @SuppressWarnings("resource")
+	protected Jedis getRedis() {
         try {
         	if(redisClient==null){
 	            JedisPoolConfig config = new JedisPoolConfig();
@@ -102,5 +104,10 @@ public class RedisCache implements Cache {
             e.printStackTrace();
         }
         throw new RuntimeException("Redis Connect init failed!");
+    }
+    
+    private byte[] getKey(Object key){
+    	String md5str=BaseUtils.md5(key.toString());
+    	return md5str.getBytes();
     }
 }
