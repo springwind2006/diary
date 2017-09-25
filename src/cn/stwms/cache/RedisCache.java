@@ -11,6 +11,7 @@ import cn.stwms.utils.BeanUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.Protocol;
 
 public class RedisCache implements Cache {
 	
@@ -25,6 +26,7 @@ public class RedisCache implements Cache {
     private String host="127.0.0.1";	//服务器
 	private int port=6379;				//连接端口
 	private int expires=60;		//单位：秒
+	private String password=null;
 
 	public String getHost() {
 		return host;
@@ -32,18 +34,21 @@ public class RedisCache implements Cache {
 	public void setHost(String host) {
 		this.host = host;
 	}
-
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
 	public int getPort() {
 		return port;
 	}
-
 	public void setPort(int port) {
 		this.port = port;
 	}
     public int getExpires() {
 		return expires;
 	}
-
 	public void setExpires(int expires) {
 		this.expires = expires;
 	}
@@ -96,7 +101,7 @@ public class RedisCache implements Cache {
         	if(redisClient==null){
 	            JedisPoolConfig config = new JedisPoolConfig();
 	            //System.out.print("---JedisPool Init-->host:"+host+" port:"+port+" expires:"+expires);
-	            JedisPool pool = new JedisPool(config, host,port);
+	            JedisPool pool = new JedisPool(config, host,port,Protocol.DEFAULT_TIMEOUT,password);
 	            redisClient=pool.getResource();
         	}
         	return redisClient;

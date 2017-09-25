@@ -12,6 +12,8 @@
 		<property name="host" value="127.0.0.1"/>
 		<!-- 端口,默认6379 -->
 		<property name="port" value="6379"/> 
+		<!-- 密码,默认为null -->
+		<!-- <property name="password" value="jlHhK9efIhL9%5icnH!8Kg(HI@ek#7Ji"/> -->
 	</cache>
 	<!--默认二级缓存配置，回收策略为先进先出;缓存为30秒;最多缓存512个引用对象-->
 	<!-- <cache eviction="FIFO" flushInterval="30000" size="512" readOnly="true" /> -->
