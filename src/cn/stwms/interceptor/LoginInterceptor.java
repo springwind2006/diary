@@ -9,6 +9,7 @@ import org.apache.struts2.ServletActionContext;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionInvocation;
 import com.opensymphony.xwork2.interceptor.MethodFilterInterceptor;
+import com.opensymphony.xwork2.util.ValueStack;
 
 import cn.stwms.model.User;
 
@@ -34,7 +35,9 @@ public class LoginInterceptor extends MethodFilterInterceptor {
 	    	userId=String.valueOf(user.getId());
 		} catch (Exception e) {
 			System.out.println(actionContext.getName()+":未登录");
-			actionContext.getValueStack().setValue("data", 121);
+			ValueStack valueStack=actionContext.getValueStack();
+			valueStack.setValue("errcode", 1);
+			valueStack.setValue("errmsg", "not login");
 			return "login";
 		}
 

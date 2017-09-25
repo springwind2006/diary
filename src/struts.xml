@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE struts PUBLIC
-    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
-    "http://struts.apache.org/dtds/struts-2.0.dtd">
+    "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+    "http://struts.apache.org/dtds/struts-2.5.dtd">
 
 <struts>
 	<!-- 【常量配置】 -->
@@ -11,6 +11,8 @@
 	<constant name="struts.configuration.xml.reload" value="true" />
 	<constant name="struts.i18n.encoding" value="UTF-8" />
 	<constant name="struts.devMode" value="false" />
+	<!-- 启用动态调用，2.5版本必须 -->
+	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
 	
 	<!-- 按自动装配方式 -->
 	<constant name="struts.objectFactory.spring.autoWire" value="true" />
@@ -31,7 +33,6 @@
     	
     	<!-- 设置全局拦截器 -->
     	<default-interceptor-ref name="globalInterceptor"/>
-    	
     	<!-- 全局结果显示 -->
     	<global-results>  
             <result name="login" type="json">/WEB-INF/Views/User/login.jsp</result>  
@@ -39,6 +40,8 @@
             <result name="failed">/WEB-INF/Views/Common/failed.jsp</result>
             <result name="exception">/WEB-INF/Views/Common/exception.jsp</result>
         </global-results>
+        <!-- 允许方法使用通配符，2.5以上版本必须 -->
+        <global-allowed-methods>regex:.*</global-allowed-methods>
         <!-- 全局错误显示 -->
         <global-exception-mappings>  
             <exception-mapping result="exception" exception="java.lang.Exception"></exception-mapping>  
