@@ -1,4 +1,5 @@
 package cn.stwms.action;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -12,6 +13,7 @@ import org.apache.struts2.interceptor.ServletResponseAware;
 import org.apache.struts2.interceptor.SessionAware;
 import org.apache.struts2.util.ServletContextAware;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 public class Action  extends ActionSupport 
@@ -29,10 +31,51 @@ public class Action  extends ActionSupport
 	protected HttpServletResponse response;
 	protected Map<String, Object> session;
 	Map<String, String> cookies;
+	protected String baseUrl=null;
+	protected String method=null;
+
+	private HashMap<String, Object> message=new HashMap<String, Object>(){{
+		put("errcode", 0); 
+		put("errmsg", "ok");
+		put("data", null);
+	}};
+	public HashMap<String, Object> getMessage(){
+		return message;
+	}
+	
+	public String success(){
+		message.put("errcode", 0); 
+		message.put("errmsg", "ok");
+		return SUCCESS;
+	}
+	
+	public String success(Object data){
+		message.put("errcode", 0); 
+		message.put("errmsg", "ok");
+		message.put("data", data);
+		return SUCCESS;
+	}
+	
+	public String error(){
+		message.put("errcode", 1); 
+		message.put("errmsg", ERROR);
+		return SUCCESS;
+	}
+	public String error(String msg){
+		message.put("errcode", 1); 
+		message.put("errmsg", msg);
+		return SUCCESS;
+	}
+	public String error(String msg,int code){
+		message.put("errcode", code); 
+		message.put("errmsg", msg);
+		return SUCCESS;
+	}
+	
 
 	@Override
 	public String execute() throws Exception {
-		return "welcome";
+		return SUCCESS;
 	}
 
 	@Override
@@ -43,6 +86,8 @@ public class Action  extends ActionSupport
 	@Override
 	public void setServletRequest(HttpServletRequest request) {
 		this.request=request;
+		baseUrl=request.getContextPath();
+		method=request.getMethod();
 	}
 
 	@Override
@@ -65,6 +110,18 @@ public class Action  extends ActionSupport
 		this.application=application;
 	}
 	
+	public String getBaseUrl(){
+		return baseUrl;
+	}
+	public String getMethod(){
+		return method;
+	}
+	
+	public void setModel(String key,Object value){
+		ActionContext.getContext().put(key, value);
+	}
+	
 }
+
 
 

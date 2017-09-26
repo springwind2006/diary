@@ -10,6 +10,8 @@ public class User implements Serializable{
 	private String email;
 	private int addtime;
 	private int lastlogin;
+	private String token;
+	
 	public void setId(int id){
 		this.id=id;
 	}
@@ -45,5 +47,11 @@ public class User implements Serializable{
 	}
 	public int getLastlogin(){
 		return lastlogin;
+	}
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
 	}
 }

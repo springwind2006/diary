@@ -1,58 +1,69 @@
 package cn.stwms.action;
 
+import java.util.HashMap;
+import com.opensymphony.xwork2.ModelDriven;
+
+import cn.stwms.model.User;
 import cn.stwms.service.UserService;
 
-public class UserAction extends Action {
+public class UserAction extends Action implements ModelDriven<User>{
 
 	private static final long serialVersionUID = 1L;
-	private String errcode="0";
-	private String errmsg="ok";
-	private Object data=null;
+	private User user=new User();
 	private UserService userService;
 	
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
 
-	public String getErrcode() {
-		return errcode;
+	@Override
+	public User getModel() {
+		return user;
 	}
-
-	public void setErrcode(String errcode) {
-		this.errcode = errcode;
-	}
-
-	public String getErrmsg() {
-		return errmsg;
-	}
-
-	public void setErrmsg(String errmsg) {
-		this.errmsg = errmsg;
-	}
-
-	public Object getData() {
-		return data;
-	}
-
-	public void setData(Object data) {
-		this.data = data;
-	}
-
+	
 	/**
 	 * 注册
 	 * */
 	public String register() {
-		String kw=request.getParameter("kw")==null?"n":request.getParameter("kw");
-		data=userService.list(kw);
-		return SUCCESS;
+		if(method.equals("POST")){
+			int errorcode=userService.register(user);
+			String[] errormsgs=new String[]{
+					"注册成功",
+					"用户名或密码为空",
+					"用户名已存在",
+					"系统繁忙，稍候再试"
+			};
+			return errorcode>0 ? error(errormsgs[errorcode],errorcode) : success(user.getToken());
+		}else{
+			HashMap<String, Object> vo=new HashMap<>();
+			vo.put("username", "test");
+			vo.put("password", "test");
+			vo.put("email", "test@163.com");
+			setModel("vo", vo);
+			return success();
+		}
 	}
 	
 	/**
 	 * 登录
 	 * */
 	public String login() {
-		data=request.getParameterMap();
-		return SUCCESS;
+		if(method.equals("POST")){
+			int errorcode=userService.login(user);
+			String[] errormsgs=new String[]{
+					"登录成功",
+					"用户名或密码为空",
+					"用户名或密码错误",
+					"系统繁忙，稍候再试"
+			};
+			return errorcode>0 ? error(errormsgs[errorcode],errorcode) : success(user.getToken());
+		}else{
+			HashMap<String, Object> vo=new HashMap<>();
+			vo.put("username", "test");
+			vo.put("password", "test");
+			setModel("vo", vo);
+			return success();
+		}
 	}
 
 	/**
@@ -61,4 +72,5 @@ public class UserAction extends Action {
 	public String findPassword() {
 		return SUCCESS;
 	}
+
 }

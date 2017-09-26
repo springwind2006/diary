@@ -1,5 +1,6 @@
 package cn.stwms.interceptor;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -28,17 +29,18 @@ public class LoginInterceptor extends MethodFilterInterceptor {
 		ServletContext  servletContext=ServletActionContext.getServletContext();
 	    ActionContext actionContext=invocation.getInvocationContext();
 	    Map<String, Object> session=actionContext.getSession();
+	    boolean isApi=actionContext.getName().startsWith("api/");
+	    HashMap<String, Object> message=(HashMap<String, Object>)actionContext.getValueStack().findValue("message");
+	    
 	    User user=(User)session.get("user");
 	    String userId="";
 	    
 	    try {
 	    	userId=String.valueOf(user.getId());
 		} catch (Exception e) {
-			System.out.println(actionContext.getName()+":未登录");
-			ValueStack valueStack=actionContext.getValueStack();
-			valueStack.setValue("errcode", 1);
-			valueStack.setValue("errmsg", "not login");
-			return "login";
+			message.put("errcode", 1);
+			message.put("errmsg", "notLogin");
+			return isApi?"api":"login";
 		}
 
 	    //单点登录
@@ -47,14 +49,15 @@ public class LoginInterceptor extends MethodFilterInterceptor {
 		    String sessionIdLast=userList.get(userId);
 		    String sessionIdNow=ServletActionContext.getRequest().getSession().getId();
 	    	if(!sessionIdLast.trim().equals(sessionIdNow)){
-		    	System.out.println("此账号已经登录");
-		    	return "hasLogined";
+	    		message.put("errcode", 2);
+				message.put("errmsg", "hasLogined");
+		    	return isApi?"api":"failed";
 		    }
 		} catch (Exception e) {
-			return "failed";
+			message.put("errcode", 3);
+			message.put("errmsg", "errorLogin");
+			return isApi?"api":"failed";
 		}
-	   
-	    
 		return invocation.invoke();
 	}
 }

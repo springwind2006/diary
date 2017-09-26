@@ -11,6 +11,7 @@
 	<constant name="struts.configuration.xml.reload" value="true" />
 	<constant name="struts.i18n.encoding" value="UTF-8" />
 	<constant name="struts.devMode" value="false" />
+	<constant name="struts.actionProxyFactory" value="cn.stwms.struts2.StrutsActionProxyFactory" />
 	<!-- 启用动态调用，2.5版本必须 -->
 	<constant name="struts.enable.DynamicMethodInvocation" value="true" />
 	
@@ -24,6 +25,7 @@
     		<interceptor name="loginfilter" class="cn.stwms.interceptor.LoginInterceptor"/>
     		<interceptor-stack name="globalInterceptor">
 	    		<interceptor-ref name="loginfilter">
+	    			<param name="root">root</param>
 	    			<param name="excludeMethods">login,register,findPassword</param>
 	    		</interceptor-ref>
 	    		<!-- 注意：此处必须将默认拦截器加入，否则很多系统功能无法使用 -->
@@ -35,8 +37,14 @@
     	<default-interceptor-ref name="globalInterceptor"/>
     	<!-- 全局结果显示 -->
     	<global-results>  
-            <result name="login" type="json">/WEB-INF/Views/User/login.jsp</result>  
-            <result name="hasLogined">/WEB-INF/Views/Common/failed.jsp</result>
+    		<result name="api" type="json">
+    			<param name="root">message</param>
+    		</result>
+    		<!-- chain与redirectAction区别：chain不改变地址栏 -->
+            <!-- <result name="login" type="chain">User/login</result> -->
+            <result name="login" type="redirectAction">
+				<param name="actionName">user/login</param>
+			</result>
             <result name="failed">/WEB-INF/Views/Common/failed.jsp</result>
             <result name="exception">/WEB-INF/Views/Common/exception.jsp</result>
         </global-results>
@@ -52,16 +60,16 @@
     <package name="diary" namespace="/"  extends="base">
     	<!-- 默认欢迎页 -->
     	<default-action-ref name="welcome" />
-		<action name="welcome" >
-			<result name="success">/index.jsp</result>  
+		<action name="welcome" class="cn.stwms.action.Action">
+			<result>/index.jsp</result>  
 		</action>
     	<!-- 方法映射 -->
-	    <action name="*/*" class="cn.stwms.action.{1}Action" method="{2}">
+    	<action name="*/*" class="cn.stwms.action.{1}Action" method="{2}">
             <result name="success" >/WEB-INF/Views/{1}/{2}.jsp</result>
         </action>
         <action name="api/*/*" class="cn.stwms.action.{1}Action" method="{2}">
             <result name="success" type="json" >
-            	<param name="root">root</param>
+            	<param name="root">message</param>
             </result>
         </action>
     </package>

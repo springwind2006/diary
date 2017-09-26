@@ -14,7 +14,7 @@
     Diary类就是diarys表所对应的实体类
     -->
     
-    <insert id="addDiary" parameterType="Diary">
+    <insert id="addDiary" parameterType="Diary" useGeneratedKeys="true" keyProperty="id">
     	insert into m_diary (title,subtitle,content,weather,emote,addtime,edittime,sync_id,userid) values (#{title}, #{subtitle}, #{content}, #{weather}, #{emote}, #{addtime}, #{edittime}, #{sync_id},#{userid})
     </insert>
     <update id="updateDiary" parameterType="Diary">

@@ -3,12 +3,15 @@ package cn.stwms.utils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Properties;
 
 public class BaseUtils {
+	private static Properties config=BaseUtils.loadConfig("config");
 	/**
 	 * 字符串转换为整数，如果无法转换返回0
 	 * @param str 待转换的字符串
@@ -30,7 +33,7 @@ public class BaseUtils {
 	 * @return
 	 */
 	public static int getTime(){
-		return Math.round((new Date()).getTime()/1000);
+		return (int)(System.currentTimeMillis()/1000);
 	}
 
 	/**
@@ -128,5 +131,40 @@ public class BaseUtils {
 			}
 		}
 		return res.toString();
+	}
+	
+	/**
+	 * 根据键值获取配置
+	 * @param key 配置键名称
+	 * @return 返回键值
+	 * */
+	public static String getConfig(String key){
+		return config!=null ? config.getProperty(key) : null;
+	}
+	
+	/**
+	 * 加载classpath下的配置文件
+	 * @param file 配置文件名（不包括扩展名）
+	 * @return Properties类型的配置文件
+	 * */
+	public static Properties loadConfig(String file){
+		Properties prop=new Properties();
+		InputStream fis=null;
+        try {
+        	fis = BaseUtils.class.getClassLoader().getResourceAsStream(file+".properties");
+            prop.load(fis);
+            System.out.println("Load config file:"+file+" success!");
+        } catch (Exception e) {
+        	System.out.println("Load config file:"+file+" failed!");
+        } finally {
+            if (fis != null) {
+                try {
+					fis.close();
+					fis=null;
+				} catch (IOException e) {
+				}
+            }
+        }
+		return prop;
 	}
 }

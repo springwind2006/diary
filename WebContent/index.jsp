@@ -9,14 +9,20 @@
 <title>首页</title>
 </head>
 <body>
-<hr/>Diary<br/>
-<s:a action="Diary/save?id=12">save</s:a>
-<s:a action="Diary/list">list</s:a>
-<s:a action="Diary/sync">sync</s:a>
-<p>${param.id}</p>
+<hr/>api/Diary<br/>
+<s:a action="api/diary/save?id=12">api/save</s:a>
+<s:a action="api/diary/list">api/list</s:a>
+<s:a action="api/diary/sync">api/sync</s:a>
 <hr/>User<br/>
-<s:a action="User/register">register</s:a>
-<s:a action="User/login">login</s:a>
-<s:a action="User/findPassword">findPassword</s:a>
+<s:a action="user/register">register</s:a>
+<s:a action="user/login">login</s:a>
+<s:a action="user/findPassword">findPassword</s:a>
+<hr/>api/User<br/>
+<s:a action="api/user/register">api/register</s:a>
+<s:a action="api/user/login">api/login</s:a>
+<s:a action="api/user/findPassword">api/findPassword</s:a>
+<hr/>Other<br/>
+<s:a action="123">123</s:a>
+<s:a action="api/123">api/123</s:a>
 </body>
 </html>

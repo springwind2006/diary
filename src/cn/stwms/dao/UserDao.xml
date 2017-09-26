@@ -25,11 +25,17 @@
     resultType="myBatis.demo.User"就表示将查询结果封装成一个User类的对象返回
     User类就是users表所对应的实体类
     -->
-    <insert id="addUser" parameterType="User">
-    	insert into m_user(username,password,email,addtime,lastlogin) values(#{username},#{password},#{email},#{addtime},#{lastlogin})
+    <insert id="addUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+    	insert into m_user(username,password,email,addtime,lastlogin,token) values(#{username},#{password},#{email},#{addtime},#{lastlogin},#{token})
     </insert>
-    <update id="updateUser" parameterType="User">
-    	update m_user set username=#{username},password=#{password},email=#{email} where id=#{id}
+    <update id="updatePassword" parameterType="User">
+    	update m_user set password=#{password} where id=#{id}
+    </update>
+    <update id="updateEmail" parameterType="User">
+    	update m_user set email=#{email} where id=#{id}
+    </update>
+    <update id="updateToken" parameterType="User">
+    	update m_user set username=#{username},password=#{password},lastlogin=#{lastlogin},token=#{token} where id=#{id}
     </update>
     <delete id="deleteUser" parameterType="int">
     	delete from m_user where id=#{id}
@@ -37,8 +43,13 @@
     <select id="getUserById" parameterType="int" resultType="User">
         select * from m_user where id=#{id}
     </select>
+    <select id="getIdByName" parameterType="String" resultType="Integer" useCache="false">
+        select id from m_user where username=#{name} limit 1
+    </select>
+    <select id="getIdByAuth" resultType="Integer" useCache="false">
+        select id from m_user where username=#{username} and password=#{password} limit 1
+    </select>
     <select id="getAllUser" parameterType="String" resultType="User" useCache="true">
         select * from m_user where username like concat(concat('%',#{kw}),'%')
     </select>
-    
 </mapper>
