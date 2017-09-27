@@ -2,6 +2,9 @@ package cn.stwms.test;
 
 import org.junit.Test;
 
+import cn.stwms.utils.BaseUtils;
+import cn.stwms.utils.CipherUtils;
+
 import org.apache.struts2.json.JSONException;
 import org.apache.struts2.json.JSONUtil;
 
@@ -21,6 +24,11 @@ public class DemoTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	@Test
+	public void test2(){
+		System.out.println(CipherUtils.encrypt("spring", "123"));
 	}
 
 }

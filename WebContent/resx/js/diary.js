@@ -1,4 +1,6 @@
 $(function(){
+	//var cipherUtils=new CipherUtils();
+	console.log(cipherUtils.decrypt("QUBACgxe","123"));
 	//数据提交
 	$("#submit_btn").click(function(){
 		var data=$("#doform").serializeArray(),

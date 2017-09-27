@@ -1,5 +1,6 @@
 package cn.stwms.service;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -100,6 +101,27 @@ public class UserService {
 		return 1;
 	}
 	
+	
+	/**
+	 * 获取Token信息
+	 * */
+	public HashMap<String, Object> getUserInfo(User user){
+		HashMap<String, Object> token=new HashMap<>();
+		token.put("avatar", user.getAvatar());
+		token.put("token", user.getToken());
+		token.put("lastlogin", user.getLastlogin());
+		token.put("username", user.getUsername());
+		token.put("id", user.getId());
+		return token;
+	}
+	
+	/**
+	 * 检查Token是否过期
+	 * */
+	public boolean checkToken(String token){
+		return false;
+	}
+	
 	/**
 	 * 生成Token文件
 	 * */
@@ -110,4 +132,5 @@ public class UserService {
 		sb.append(BaseUtils.getConfig("diary.token.key"));
 		return BaseUtils.md5(sb.toString());
 	}
+	
 }

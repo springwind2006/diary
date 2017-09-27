@@ -4,17 +4,11 @@ import java.util.HashMap;
 import com.opensymphony.xwork2.ModelDriven;
 
 import cn.stwms.model.User;
-import cn.stwms.service.UserService;
 
 public class UserAction extends Action implements ModelDriven<User>{
 
 	private static final long serialVersionUID = 1L;
 	private User user=new User();
-	private UserService userService;
-	
-	public void setUserService(UserService userService) {
-		this.userService = userService;
-	}
 
 	@Override
 	public User getModel() {
@@ -33,7 +27,9 @@ public class UserAction extends Action implements ModelDriven<User>{
 					"用户名已存在",
 					"系统繁忙，稍候再试"
 			};
-			return errorcode>0 ? error(errormsgs[errorcode],errorcode) : success(user.getToken());
+			
+			return errorcode>0 ? error(errormsgs[errorcode],errorcode) : 
+				success(userService.getUserInfo(user));
 		}else{
 			HashMap<String, Object> vo=new HashMap<>();
 			vo.put("username", "test");
@@ -56,7 +52,9 @@ public class UserAction extends Action implements ModelDriven<User>{
 					"用户名或密码错误",
 					"系统繁忙，稍候再试"
 			};
-			return errorcode>0 ? error(errormsgs[errorcode],errorcode) : success(user.getToken());
+			System.out.println(getPostData());
+			return errorcode>0 ? error(errormsgs[errorcode],errorcode) : 
+				success(userService.getUserInfo(user));
 		}else{
 			HashMap<String, Object> vo=new HashMap<>();
 			vo.put("username", "test");

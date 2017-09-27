@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class User implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private int id;
+	private String avatar;
 	private String username;
 	private String password;
 	private String email;
@@ -17,6 +18,12 @@ public class User implements Serializable{
 	}
 	public int getId(){
 		return id;
+	}
+	public String getAvatar() {
+		return avatar;
+	}
+	public void setAvatar(String avatar) {
+		this.avatar = avatar;
 	}
 	public void setUsername(String username){
 		this.username=username;

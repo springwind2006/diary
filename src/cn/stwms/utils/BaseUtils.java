@@ -10,7 +10,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Properties;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 public class BaseUtils {
+	private static final Logger LOG = LogManager.getLogger(BaseUtils.class);
 	private static Properties config=BaseUtils.loadConfig("config");
 	/**
 	 * 字符串转换为整数，如果无法转换返回0
@@ -153,9 +157,9 @@ public class BaseUtils {
         try {
         	fis = BaseUtils.class.getClassLoader().getResourceAsStream(file+".properties");
             prop.load(fis);
-            System.out.println("Load config file:"+file+" success!");
+            LOG.debug("Load config file:"+file+" success!");
         } catch (Exception e) {
-        	System.out.println("Load config file:"+file+" failed!");
+        	LOG.warn("Load config file:"+file+" failed!");
         } finally {
             if (fis != null) {
                 try {

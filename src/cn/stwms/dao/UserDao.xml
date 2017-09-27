@@ -5,7 +5,7 @@
  -->
 <mapper namespace="cn.stwms.dao.UserDao">
 	<!-- 使用自定义缓存（支持自定义参数） -->
-	<cache type="cn.stwms.cache.RedisCache">
+	<cache type="cn.stwms.mybatis.RedisCache">
 		<!-- 过期时间,默认60,单位:秒 -->
 		<property name="expires" value="30"/> 
 		<!-- 主机,默认127.0.0.1 -->
@@ -26,8 +26,11 @@
     User类就是users表所对应的实体类
     -->
     <insert id="addUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
-    	insert into m_user(username,password,email,addtime,lastlogin,token) values(#{username},#{password},#{email},#{addtime},#{lastlogin},#{token})
+    	insert into m_user(avatar,username,password,email,addtime,lastlogin,token) values(#{avatar},#{username},#{password},#{email},#{addtime},#{lastlogin},#{token})
     </insert>
+    <update id="updateAvatar" parameterType="User">
+    	update m_user set avatar=#{avatar} where id=#{id}
+    </update>
     <update id="updatePassword" parameterType="User">
     	update m_user set password=#{password} where id=#{id}
     </update>
@@ -40,14 +43,14 @@
     <delete id="deleteUser" parameterType="int">
     	delete from m_user where id=#{id}
     </delete>
-    <select id="getUserById" parameterType="int" resultType="User">
-        select * from m_user where id=#{id}
-    </select>
     <select id="getIdByName" parameterType="String" resultType="Integer" useCache="false">
         select id from m_user where username=#{name} limit 1
     </select>
     <select id="getIdByAuth" resultType="Integer" useCache="false">
         select id from m_user where username=#{username} and password=#{password} limit 1
+    </select>
+    <select id="getUserById" parameterType="int" resultType="User">
+        select * from m_user where id=#{id}
     </select>
     <select id="getAllUser" parameterType="String" resultType="User" useCache="true">
         select * from m_user where username like concat(concat('%',#{kw}),'%')

@@ -1,4 +1,4 @@
-package cn.stwms.cache;
+package cn.stwms.mybatis;
 
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -100,7 +100,7 @@ public class RedisCache implements Cache {
         try {
         	if(redisClient==null){
 	            JedisPoolConfig config = new JedisPoolConfig();
-	            //System.out.print("---JedisPool Init-->host:"+host+" port:"+port+" expires:"+expires);
+	            logger.debug("---JedisPool Init-->host:"+host+" port:"+port+" expires:"+expires);
 	            JedisPool pool = new JedisPool(config, host,port,Protocol.DEFAULT_TIMEOUT,password);
 	            redisClient=pool.getResource();
         	}
